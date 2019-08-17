@@ -24,7 +24,8 @@
                 </div>
             </div>
             <div v-if=!edit class="d-flex mt-1">
-                <button class="btn btn-primary ml-auto" v-on:click.prevent="addRow">Add</button>
+                <button v-on:click.prevent="addRow" class="btn btn-primary ml-auto"
+                        v-bind:disabled="isAddDisabled">Add</button>
             </div>
             <div v-if=edit class="d-flex mt-1">
                 <button class="btn btn-primary ml-auto" v-on:click.prevent="reset">Reset</button>
@@ -94,12 +95,16 @@
         },
         watch:{
             quantity(newVal) {
-                if(this.medicine.retail_price)
+                if(Number.isInteger(parseInt(newVal))&&this.medicine.retail_price)
                     this.price=this.medicine.retail_price*newVal;
+                else
+                    this.price='';
             },
             medicine(newVal) {
-                if(this.quantity)
+                if(Number.isInteger(parseInt(this.quantity))&&newVal.retail_price)
                     this.price=this.quantity*newVal.retail_price;
+                else
+                    this.price='';
             }
         },
         created() {
@@ -110,24 +115,25 @@
         },
         methods: {
             addRow() {
-                fetch('api/sales',{
-                    method:'POST',
-                    headers: {
-                        'Content-type':'application/json'
-                    },
-                    body: JSON.stringify({
-                        'medicine_id':this.medicine.id,
-                        'date':this.date.getUTCFullYear() + "-" +
-                                ("0" + (this.date.getUTCMonth()+1)).slice(-2) + "-" +
-                                ("0" + this.date.getUTCDate()).slice(-2),
-                        'quantity':this.quantity,
-                        'price':this.price
-                    })
-                })
-                .then(res=>res.json())
-                .then(res=> {
-                    this.$emit('add-row',res.data);
-                });
+                console.log(this.medicine);
+                // fetch('api/sales',{
+                //     method:'POST',
+                //     headers: {
+                //         'Content-type':'application/json'
+                //     },
+                //     body: JSON.stringify({
+                //         'medicine_id':this.medicine.id,
+                //         'date':this.date.getUTCFullYear() + "-" +
+                //                 ("0" + (this.date.getUTCMonth()+1)).slice(-2) + "-" +
+                //                 ("0" + this.date.getUTCDate()).slice(-2),
+                //         'quantity':this.quantity,
+                //         'price':this.price
+                //     })
+                // })
+                // .then(res=>res.json())
+                // .then(res=> {
+                //     this.$emit('add-row',res.data);
+                // });
                 this.reset();
                 alert("Sale Added Successfully");
             },
@@ -172,6 +178,12 @@
                 this.quantity='';
                 this.price='';
                 this.edit=false;
+            }
+        },
+        computed: {
+            isAddDisabled() {
+                if(!this.medicine.id||!Number.isInteger(parseInt(this.quantity))||this.quantity<=0)
+                    return true;
             }
         }
     }

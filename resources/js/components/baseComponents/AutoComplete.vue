@@ -44,13 +44,18 @@ export default {
                 this.$emit('input',this.input);
             else
             {
-                this.shownItems.some((item,index)=> {
+                if(!this.shownItems.some((item,index)=> {
                     if(item[this.field].toLowerCase()==newVal.toLowerCase())
                     {
                         this.$emit('input',this.shownItems[index]);
                         return true;
                     }
-                });
+                }))
+                {
+                    let object={};
+                    object[this.field]=this.input;
+                    this.$emit('input',object);
+                }
             }
         },
         value(newVal) {

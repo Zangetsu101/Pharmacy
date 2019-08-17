@@ -2157,6 +2157,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -2203,10 +2204,10 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     quantity: function quantity(newVal) {
-      if (this.medicine.retail_price) this.price = this.medicine.retail_price * newVal;
+      if (Number.isInteger(parseInt(newVal)) && this.medicine.retail_price) this.price = this.medicine.retail_price * newVal;else this.price = '';
     },
     medicine: function medicine(newVal) {
-      if (this.quantity) this.price = this.quantity * newVal.retail_price;
+      if (Number.isInteger(parseInt(this.quantity)) && newVal.retail_price) this.price = this.quantity * newVal.retail_price;else this.price = '';
     }
   },
   created: function created() {
@@ -2221,24 +2222,25 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     addRow: function addRow() {
-      var _this2 = this;
+      console.log(this.medicine); // fetch('api/sales',{
+      //     method:'POST',
+      //     headers: {
+      //         'Content-type':'application/json'
+      //     },
+      //     body: JSON.stringify({
+      //         'medicine_id':this.medicine.id,
+      //         'date':this.date.getUTCFullYear() + "-" +
+      //                 ("0" + (this.date.getUTCMonth()+1)).slice(-2) + "-" +
+      //                 ("0" + this.date.getUTCDate()).slice(-2),
+      //         'quantity':this.quantity,
+      //         'price':this.price
+      //     })
+      // })
+      // .then(res=>res.json())
+      // .then(res=> {
+      //     this.$emit('add-row',res.data);
+      // });
 
-      fetch('api/sales', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          'medicine_id': this.medicine.id,
-          'date': this.date.getUTCFullYear() + "-" + ("0" + (this.date.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + this.date.getUTCDate()).slice(-2),
-          'quantity': this.quantity,
-          'price': this.price
-        })
-      }).then(function (res) {
-        return res.json();
-      }).then(function (res) {
-        _this2.$emit('add-row', res.data);
-      });
       this.reset();
       alert("Sale Added Successfully");
     },
@@ -2252,7 +2254,7 @@ __webpack_require__.r(__webpack_exports__);
       this.edit = true;
     },
     editRow: function editRow() {
-      var _this3 = this;
+      var _this2 = this;
 
       fetch("api/sales/".concat(this.id), {
         method: 'PUT',
@@ -2268,7 +2270,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         return res.json();
       }).then(function (res) {
-        _this3.$emit('edit-row', res.data);
+        _this2.$emit('edit-row', res.data);
       });
       this.reset();
       alert("Sale Edited Successfully");
@@ -2281,6 +2283,11 @@ __webpack_require__.r(__webpack_exports__);
       this.quantity = '';
       this.price = '';
       this.edit = false;
+    }
+  },
+  computed: {
+    isAddDisabled: function isAddDisabled() {
+      if (!this.medicine.id || !Number.isInteger(parseInt(this.quantity)) || this.quantity <= 0) return true;
     }
   }
 });
@@ -2394,13 +2401,17 @@ __webpack_require__.r(__webpack_exports__);
 
       this.listPos = -1;
       if (this.weak) this.$emit('input', this.input);else {
-        this.shownItems.some(function (item, index) {
+        if (!this.shownItems.some(function (item, index) {
           if (item[_this.field].toLowerCase() == newVal.toLowerCase()) {
             _this.$emit('input', _this.shownItems[index]);
 
             return true;
           }
-        });
+        })) {
+          var object = {};
+          object[this.field] = this.input;
+          this.$emit('input', object);
+        }
       }
     },
     value: function value(newVal) {
@@ -39241,6 +39252,7 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-auto",
+                  attrs: { disabled: _vm.isAddDisabled },
                   on: {
                     click: function($event) {
                       $event.preventDefault()
