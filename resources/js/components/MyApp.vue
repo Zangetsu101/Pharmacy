@@ -11,7 +11,6 @@
                 <companies-table></companies-table>
             </div>
             <div v-show="selectedPage==='sales'">
-                <!-- <auto-complete v-model="medicine" v-bind:data="medicines" field="name"></auto-complete> -->
                 <sales-table></sales-table>
             </div>
             <!-- <div v-show="selectedPage==='orders'">
@@ -25,7 +24,6 @@
     import SideBar from './SideBar.vue';
     import MedicinesTable from './MedicinesTable.vue';
     import CompaniesTable from './CompaniesTable.vue';
-    // import AutoComplete from './baseComponents/AutoComplete.vue';
     import SalesTable from'./SalesTable.vue';
     export default {
         components: {

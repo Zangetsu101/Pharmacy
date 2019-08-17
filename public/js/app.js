@@ -2074,10 +2074,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
- // import AutoComplete from './baseComponents/AutoComplete.vue';
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2115,6 +2113,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _baseComponents_MyTable_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./baseComponents/MyTable.vue */ "./resources/js/components/baseComponents/MyTable.vue");
 /* harmony import */ var _baseComponents_AutoComplete_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./baseComponents/AutoComplete.vue */ "./resources/js/components/baseComponents/AutoComplete.vue");
 /* harmony import */ var vuejs_datepicker__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuejs-datepicker */ "./node_modules/vuejs-datepicker/dist/vuejs-datepicker.esm.js");
+//
+//
+//
 //
 //
 //
@@ -2222,25 +2223,24 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     addRow: function addRow() {
-      console.log(this.medicine); // fetch('api/sales',{
-      //     method:'POST',
-      //     headers: {
-      //         'Content-type':'application/json'
-      //     },
-      //     body: JSON.stringify({
-      //         'medicine_id':this.medicine.id,
-      //         'date':this.date.getUTCFullYear() + "-" +
-      //                 ("0" + (this.date.getUTCMonth()+1)).slice(-2) + "-" +
-      //                 ("0" + this.date.getUTCDate()).slice(-2),
-      //         'quantity':this.quantity,
-      //         'price':this.price
-      //     })
-      // })
-      // .then(res=>res.json())
-      // .then(res=> {
-      //     this.$emit('add-row',res.data);
-      // });
+      var _this2 = this;
 
+      fetch('api/sales', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          'medicine_id': this.medicine.id,
+          'date': this.date.getUTCFullYear() + "-" + ("0" + (this.date.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + this.date.getUTCDate()).slice(-2),
+          'quantity': this.quantity,
+          'price': this.price
+        })
+      }).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        _this2.$emit('add-row', res.data);
+      });
       this.reset();
       alert("Sale Added Successfully");
     },
@@ -2254,7 +2254,7 @@ __webpack_require__.r(__webpack_exports__);
       this.edit = true;
     },
     editRow: function editRow() {
-      var _this2 = this;
+      var _this3 = this;
 
       fetch("api/sales/".concat(this.id), {
         method: 'PUT',
@@ -2270,7 +2270,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         return res.json();
       }).then(function (res) {
-        _this2.$emit('edit-row', res.data);
+        _this3.$emit('edit-row', res.data);
       });
       this.reset();
       alert("Sale Edited Successfully");
@@ -2286,7 +2286,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
-    isAddDisabled: function isAddDisabled() {
+    isSaleValid: function isSaleValid() {
       if (!this.medicine.id || !Number.isInteger(parseInt(this.quantity)) || this.quantity <= 0) return true;
     }
   }
@@ -2399,17 +2399,24 @@ __webpack_require__.r(__webpack_exports__);
     input: function input(newVal) {
       var _this = this;
 
+      this.shownItems = this.listItems.filter(function (row) {
+        if (!_this.input) return false;
+        return row[_this.field].toLowerCase().startsWith(_this.input.toLowerCase());
+      }).filter(function (row, index) {
+        if (index >= 10) return false;
+        return true;
+      });
       this.listPos = -1;
-      if (this.weak) this.$emit('input', this.input);else {
+      if (this.weak) this.$emit('input', newVal);else {
         if (!this.shownItems.some(function (item, index) {
-          if (item[_this.field].toLowerCase() == newVal.toLowerCase()) {
+          if (item[_this.field].toLowerCase() === newVal.toLowerCase()) {
             _this.$emit('input', _this.shownItems[index]);
 
             return true;
           }
         })) {
           var object = {};
-          object[this.field] = this.input;
+          object[this.field] = newVal;
           this.$emit('input', object);
         }
       }
@@ -2427,21 +2434,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     prevPos: function prevPos() {
       if (this.listPos > 0) this.listPos--;
-    }
-  },
-  computed: {
-    rows: function rows() {
-      var _this2 = this;
-
-      var rows = this.listItems.filter(function (row) {
-        if (!_this2.input) return false;
-        return row[_this2.field].toLowerCase().startsWith(_this2.input.toLowerCase());
-      }).filter(function (row, index) {
-        if (index >= 10) return false;
-        return true;
-      });
-      this.shownItems = rows;
-      return rows;
     }
   }
 });
@@ -39182,6 +39174,7 @@ var render = function() {
               _c("auto-complete", {
                 attrs: {
                   data: _vm.medicines,
+                  weak: false,
                   field: "name",
                   placeholder: "Name"
                 },
@@ -39252,7 +39245,7 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-auto",
-                  attrs: { disabled: _vm.isAddDisabled },
+                  attrs: { disabled: _vm.isSaleValid },
                   on: {
                     click: function($event) {
                       $event.preventDefault()
@@ -39285,6 +39278,7 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-2",
+                  attrs: { disabled: _vm.isSaleValid },
                   on: {
                     click: function($event) {
                       $event.preventDefault()
@@ -39488,7 +39482,7 @@ var render = function() {
       ? _c(
           "div",
           { staticClass: "list-group position-absolute" },
-          _vm._l(_vm.rows, function(row, index) {
+          _vm._l(_vm.shownItems, function(row, index) {
             return _c(
               "button",
               {

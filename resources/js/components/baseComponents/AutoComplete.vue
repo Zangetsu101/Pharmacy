@@ -8,7 +8,7 @@
                            v-on:keydown.up="prevPos"
                            v-on:keydown.enter.prevent="complete(listPos)">
         <div v-if=focused class="list-group position-absolute">
-            <button v-for="(row,index) in rows" class="list-group-item list-group-item-action"
+            <button v-for="(row,index) in shownItems" class="list-group-item list-group-item-action"
                     v-bind:key="index"
                     v-on:mousedown="complete(index)"
                     v-bind:class="{'active':listPos===index}">{{row[field]}}</button>
@@ -39,13 +39,22 @@ export default {
             this.listItems=newVal;
         },
         input(newVal) {
+            this.shownItems=this.listItems.filter(row=> {
+                if(!this.input)
+                    return false;
+                return row[this.field].toLowerCase().startsWith(this.input.toLowerCase());
+            }).filter((row,index)=> {
+                if(index>=10)
+                    return false;
+                return true;
+            });
             this.listPos=-1;
             if(this.weak)
-                this.$emit('input',this.input);
+                this.$emit('input',newVal);
             else
             {
                 if(!this.shownItems.some((item,index)=> {
-                    if(item[this.field].toLowerCase()==newVal.toLowerCase())
+                    if(item[this.field].toLowerCase()===newVal.toLowerCase())
                     {
                         this.$emit('input',this.shownItems[index]);
                         return true;
@@ -53,7 +62,7 @@ export default {
                 }))
                 {
                     let object={};
-                    object[this.field]=this.input;
+                    object[this.field]=newVal;
                     this.$emit('input',object);
                 }
             }
@@ -77,21 +86,6 @@ export default {
         prevPos() {
             if(this.listPos>0)
                 this.listPos--;
-        }
-    },
-    computed: {
-        rows() {
-            let rows=this.listItems.filter(row=> {
-                if(!this.input)
-                    return false;
-                return row[this.field].toLowerCase().startsWith(this.input.toLowerCase());
-            }).filter((row,index)=> {
-                if(index>=10)
-                    return false;
-                return true;
-            });
-            this.shownItems=rows;
-            return rows;
         }
     }
 }

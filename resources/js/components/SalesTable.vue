@@ -14,7 +14,9 @@
                                  format="yyyy-MM-dd"></date-picker>
                 </div>
                 <div class="col">
-                    <auto-complete v-model="medicine" v-bind:data="medicines" field="name" placeholder="Name"></auto-complete>
+                    <auto-complete v-model="medicine" 
+                                   v-bind:data="medicines" 
+                                   v-bind:weak=false field="name" placeholder="Name"></auto-complete>
                 </div>
                 <div class="col">
                     <input type="text" v-model="quantity" class="form-control" placeholder="Quantity">
@@ -25,11 +27,12 @@
             </div>
             <div v-if=!edit class="d-flex mt-1">
                 <button v-on:click.prevent="addRow" class="btn btn-primary ml-auto"
-                        v-bind:disabled="isAddDisabled">Add</button>
+                        v-bind:disabled="isSaleValid">Add</button>
             </div>
             <div v-if=edit class="d-flex mt-1">
                 <button class="btn btn-primary ml-auto" v-on:click.prevent="reset">Reset</button>
-                <button class="btn btn-primary ml-2" v-on:click.prevent="editRow">Submit</button>
+                <button v-on:click.prevent="editRow" class="btn btn-primary ml-2"
+                        v-bind:disabled="isSaleValid">Submit</button>
             </div>
         </form>
         <my-table 
@@ -115,25 +118,24 @@
         },
         methods: {
             addRow() {
-                console.log(this.medicine);
-                // fetch('api/sales',{
-                //     method:'POST',
-                //     headers: {
-                //         'Content-type':'application/json'
-                //     },
-                //     body: JSON.stringify({
-                //         'medicine_id':this.medicine.id,
-                //         'date':this.date.getUTCFullYear() + "-" +
-                //                 ("0" + (this.date.getUTCMonth()+1)).slice(-2) + "-" +
-                //                 ("0" + this.date.getUTCDate()).slice(-2),
-                //         'quantity':this.quantity,
-                //         'price':this.price
-                //     })
-                // })
-                // .then(res=>res.json())
-                // .then(res=> {
-                //     this.$emit('add-row',res.data);
-                // });
+                fetch('api/sales',{
+                    method:'POST',
+                    headers: {
+                        'Content-type':'application/json'
+                    },
+                    body: JSON.stringify({
+                        'medicine_id':this.medicine.id,
+                        'date':this.date.getUTCFullYear() + "-" +
+                                ("0" + (this.date.getUTCMonth()+1)).slice(-2) + "-" +
+                                ("0" + this.date.getUTCDate()).slice(-2),
+                        'quantity':this.quantity,
+                        'price':this.price
+                    })
+                })
+                .then(res=>res.json())
+                .then(res=> {
+                    this.$emit('add-row',res.data);
+                });
                 this.reset();
                 alert("Sale Added Successfully");
             },
@@ -181,7 +183,7 @@
             }
         },
         computed: {
-            isAddDisabled() {
+            isSaleValid() {
                 if(!this.medicine.id||!Number.isInteger(parseInt(this.quantity))||this.quantity<=0)
                     return true;
             }
