@@ -1,0 +1,19 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+.side-bar {
+    position: fixed;
+    height: 100vh;
+    width: $offscreen-size;
+}
+
+.page-container {
+    padding-left: $offscreen-size+1vh;
+    padding-right: 1vh;
+}
