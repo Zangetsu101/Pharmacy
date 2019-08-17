@@ -1727,6 +1727,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1797,6 +1799,12 @@ __webpack_require__.r(__webpack_exports__);
       this.name = '';
       this.edit = false;
     }
+  },
+  computed: {
+    isCompanyValid: function isCompanyValid() {
+      if (!this.name) return false;
+      return true;
+    }
   }
 });
 
@@ -1813,6 +1821,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _baseComponents_MyTable_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./baseComponents/MyTable.vue */ "./resources/js/components/baseComponents/MyTable.vue");
 /* harmony import */ var _baseComponents_AutoComplete_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./baseComponents/AutoComplete.vue */ "./resources/js/components/baseComponents/AutoComplete.vue");
+//
+//
 //
 //
 //
@@ -2033,6 +2043,15 @@ __webpack_require__.r(__webpack_exports__);
       this.wholesale_price = '';
       this.retail_price = '';
       this.edit = false;
+    },
+    isFloat: function isFloat(n) {
+      return n != "" && !isNaN(n) && Math.round(n) != n;
+    }
+  },
+  computed: {
+    isMedicineValid: function isMedicineValid() {
+      if (!this.name || !this.company.id || !this.generic_name || !this.dosage_form || !this.isFloat(parseFloat(this.wholesale_price)) && !Number.isInteger(parseInt(this.wholesale_price)) || !this.isFloat(parseFloat(this.retail_price)) && !Number.isInteger(parseInt(this.retail_price)) || parseFloat(this.wholesale_price) >= parseFloat(this.retail_price)) return false;
+      return true;
     }
   }
 });
@@ -2287,7 +2306,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     isSaleValid: function isSaleValid() {
-      if (!this.medicine.id || !Number.isInteger(parseInt(this.quantity)) || this.quantity <= 0) return true;
+      if (!this.medicine.id || !Number.isInteger(parseInt(this.quantity)) || this.quantity <= 0) return false;
+      return true;
     }
   }
 });
@@ -38641,6 +38661,7 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-auto",
+                  attrs: { disabled: !_vm.isCompanyValid },
                   on: {
                     click: function($event) {
                       $event.preventDefault()
@@ -38673,6 +38694,7 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-2",
+                  attrs: { disabled: !_vm.isCompanyValid },
                   on: {
                     click: function($event) {
                       $event.preventDefault()
@@ -38937,6 +38959,7 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-auto",
+                  attrs: { disabled: !_vm.isMedicineValid },
                   on: {
                     click: function($event) {
                       $event.preventDefault()
@@ -38969,6 +38992,7 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-2",
+                  attrs: { disabled: !_vm.isMedicineValid },
                   on: {
                     click: function($event) {
                       $event.preventDefault()
@@ -39245,7 +39269,7 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-auto",
-                  attrs: { disabled: _vm.isSaleValid },
+                  attrs: { disabled: !_vm.isSaleValid },
                   on: {
                     click: function($event) {
                       $event.preventDefault()
@@ -39278,7 +39302,7 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-2",
-                  attrs: { disabled: _vm.isSaleValid },
+                  attrs: { disabled: !_vm.isSaleValid },
                   on: {
                     click: function($event) {
                       $event.preventDefault()

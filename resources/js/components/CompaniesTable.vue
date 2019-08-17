@@ -11,11 +11,13 @@
                 </div>
             </div>
             <div v-if=!edit class="d-flex mt-1">
-                <button class="btn btn-primary ml-auto" v-on:click.prevent="addRow">Add</button>
+                <button v-on:click.prevent="addRow" class="btn btn-primary ml-auto"
+                        v-bind:disabled="!isCompanyValid">Add</button>
             </div>
             <div v-if=edit class="d-flex mt-1">
                 <button class="btn btn-primary ml-auto" v-on:click.prevent="reset">Reset</button>
-                <button class="btn btn-primary ml-2" v-on:click.prevent="editRow">Submit</button>
+                <button v-on:click.prevent="editRow" class="btn btn-primary ml-2"
+                        v-bind:disabled="!isCompanyValid">Submit</button>
             </div>
         </form>
         <my-table 
@@ -97,6 +99,13 @@
                 this.id=0;
                 this.name='';
                 this.edit=false;
+            }
+        },
+        computed: {
+            isCompanyValid() {
+                if(!this.name)
+                    return false;
+                return true;
             }
         }
     }

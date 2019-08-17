@@ -38,11 +38,13 @@
                 </div>
             </div>
             <div v-if=!edit class="d-flex mt-1">
-                <button class="btn btn-primary ml-auto" v-on:click.prevent="addRow">Add</button>
+                <button v-on:click.prevent="addRow" class="btn btn-primary ml-auto"
+                        v-bind:disabled="!isMedicineValid">Add</button>
             </div>
             <div v-if=edit class="d-flex mt-1">
-                <button class="btn btn-primary ml-auto" v-on:click.prevent="reset">Reset</button>
-                <button class="btn btn-primary ml-2" v-on:click.prevent="editRow">Submit</button>
+                <button v-on:click.prevent="reset" class="btn btn-primary ml-auto">Reset</button>
+                <button v-on:click.prevent="editRow" class="btn btn-primary ml-2"
+                        v-bind:disabled="!isMedicineValid">Submit</button>
             </div>
         </form>
         <my-table 
@@ -216,6 +218,19 @@
                 this.wholesale_price='';
                 this.retail_price='';
                 this.edit=false;
+            },
+            isFloat(n) {
+                return n != "" && !isNaN(n) && Math.round(n) != n;
+            }
+        },
+        computed: {
+            isMedicineValid() {
+                if(!this.name||!this.company.id||!this.generic_name||!this.dosage_form||
+                    (!this.isFloat(parseFloat(this.wholesale_price))&&!Number.isInteger(parseInt(this.wholesale_price)))||
+                    (!this.isFloat(parseFloat(this.retail_price))&&!Number.isInteger(parseInt(this.retail_price)))||
+                    parseFloat(this.wholesale_price)>=parseFloat(this.retail_price))
+                    return false;
+                return true;
             }
         }
     }
