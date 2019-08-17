@@ -22,7 +22,7 @@
         </form>
         <my-table 
             url="api/companies" 
-            v-bind:isEditable="isEditable"
+            v-bind:isEditable=true
             v-bind:columns="columns"
             v-on:edit="showEditForm">
         </my-table>
@@ -47,7 +47,6 @@
                         key:'name'
                     }
                 ],
-                isEditable:true,
                 edit:false,
                 id:0,
                 name:''

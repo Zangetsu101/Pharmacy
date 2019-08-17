@@ -25,7 +25,6 @@
                                    v-bind:data="generic_names"></auto-complete>
                 </div>
                 <div class="col">
-                    <!-- <input type="text" v-model="dosage_form" class="form-control" placeholder="Dosage Form"> -->
                     <auto-complete v-model="dosage_form" field="dosage_form" placeholder="Dosage Form" 
                                    v-bind:weak=true 
                                    v-bind:data="dosage_forms"></auto-complete>
@@ -49,7 +48,7 @@
         </form>
         <my-table 
             url="api/medicines" 
-            v-bind:isEditable="isEditable"
+            v-bind:isEditable=true
             v-bind:columns="columns"
             v-on:edit="showEditForm">
         </my-table>
@@ -99,7 +98,6 @@
                 companies:[],
                 generic_names:[],
                 dosage_forms:[],
-                isEditable:true,
                 edit:false,
                 id:0,
                 name:'',

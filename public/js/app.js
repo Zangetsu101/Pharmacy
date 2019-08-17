@@ -1743,7 +1743,6 @@ __webpack_require__.r(__webpack_exports__);
         name: 'Name',
         key: 'name'
       }],
-      isEditable: true,
       edit: false,
       id: 0,
       name: ''
@@ -1878,7 +1877,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1913,7 +1911,6 @@ __webpack_require__.r(__webpack_exports__);
       companies: [],
       generic_names: [],
       dosage_forms: [],
-      isEditable: true,
       edit: false,
       id: 0,
       name: '',
@@ -2177,7 +2174,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 
@@ -2208,7 +2204,6 @@ __webpack_require__.r(__webpack_exports__);
         name: 'Price',
         key: 'price'
       }],
-      isEditable: true,
       edit: false,
       disabledDates: {
         from: new Date()
@@ -38709,11 +38704,7 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("my-table", {
-        attrs: {
-          url: "api/companies",
-          isEditable: _vm.isEditable,
-          columns: _vm.columns
-        },
+        attrs: { url: "api/companies", isEditable: true, columns: _vm.columns },
         on: { edit: _vm.showEditForm }
       })
     ],
@@ -39007,11 +38998,7 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("my-table", {
-        attrs: {
-          url: "api/medicines",
-          isEditable: _vm.isEditable,
-          columns: _vm.columns
-        },
+        attrs: { url: "api/medicines", isEditable: true, columns: _vm.columns },
         on: { edit: _vm.showEditForm }
       })
     ],
@@ -39317,11 +39304,7 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("my-table", {
-        attrs: {
-          url: "api/sales",
-          isEditable: _vm.isEditable,
-          columns: _vm.columns
-        },
+        attrs: { url: "api/sales", isEditable: true, columns: _vm.columns },
         on: { edit: _vm.showEditForm }
       })
     ],

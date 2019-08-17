@@ -7,7 +7,6 @@
         <form class="mb-3">
             <div class="form-row">
                 <div class="col">
-                    <!-- <input type="date"  class="form-control"> -->
                     <date-picker v-model="date" placeholder="Date"
                                  v-bind:bootstrap-styling=true
                                  v-bind:disabled-dates=disabledDates
@@ -37,7 +36,7 @@
         </form>
         <my-table 
             url="api/sales" 
-            v-bind:isEditable="isEditable"
+            v-bind:isEditable=true
             v-bind:columns="columns"
             v-on:edit="showEditForm">
         </my-table>
@@ -82,7 +81,6 @@
                         key:'price'
                     }                
                 ],
-                isEditable:true,
                 edit:false,
                 disabledDates:{
                     from:new Date()
