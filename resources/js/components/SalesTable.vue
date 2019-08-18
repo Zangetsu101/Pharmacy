@@ -29,9 +29,9 @@
                         v-bind:disabled="!isSaleValid">Add</button>
             </div>
             <div v-if=edit class="d-flex mt-1">
-                <button class="btn btn-primary ml-auto" v-on:click.prevent="reset">Reset</button>
-                <button v-on:click.prevent="editRow" class="btn btn-primary ml-2"
+                <button v-on:click.prevent="editRow" class="btn btn-primary ml-auto"
                         v-bind:disabled="!isSaleValid">Submit</button>
+                <button class="btn btn-primary ml-2" v-on:click.prevent="reset">Reset</button>
             </div>
         </form>
         <my-table 

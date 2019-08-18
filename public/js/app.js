@@ -38675,20 +38675,6 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-auto",
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.reset($event)
-                    }
-                  }
-                },
-                [_vm._v("Reset")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary ml-2",
                   attrs: { disabled: !_vm.isCompanyValid },
                   on: {
                     click: function($event) {
@@ -38698,6 +38684,20 @@ var render = function() {
                   }
                 },
                 [_vm._v("Submit")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary ml-2",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.reset($event)
+                    }
+                  }
+                },
+                [_vm._v("Reset")]
               )
             ])
           : _vm._e()
@@ -38969,20 +38969,6 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-auto",
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.reset($event)
-                    }
-                  }
-                },
-                [_vm._v("Reset")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary ml-2",
                   attrs: { disabled: !_vm.isMedicineValid },
                   on: {
                     click: function($event) {
@@ -38992,6 +38978,20 @@ var render = function() {
                   }
                 },
                 [_vm._v("Submit")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary ml-2",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.reset($event)
+                    }
+                  }
+                },
+                [_vm._v("Reset")]
               )
             ])
           : _vm._e()
@@ -39275,20 +39275,6 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-primary ml-auto",
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.reset($event)
-                    }
-                  }
-                },
-                [_vm._v("Reset")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary ml-2",
                   attrs: { disabled: !_vm.isSaleValid },
                   on: {
                     click: function($event) {
@@ -39298,6 +39284,20 @@ var render = function() {
                   }
                 },
                 [_vm._v("Submit")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary ml-2",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.reset($event)
+                    }
+                  }
+                },
+                [_vm._v("Reset")]
               )
             ])
           : _vm._e()

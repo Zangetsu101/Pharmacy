@@ -41,9 +41,9 @@
                         v-bind:disabled="!isMedicineValid">Add</button>
             </div>
             <div v-if=edit class="d-flex mt-1">
-                <button v-on:click.prevent="reset" class="btn btn-primary ml-auto">Reset</button>
-                <button v-on:click.prevent="editRow" class="btn btn-primary ml-2"
+                <button v-on:click.prevent="editRow" class="btn btn-primary ml-auto"
                         v-bind:disabled="!isMedicineValid">Submit</button>
+                <button v-on:click.prevent="reset" class="btn btn-primary ml-2">Reset</button>
             </div>
         </form>
         <my-table 
