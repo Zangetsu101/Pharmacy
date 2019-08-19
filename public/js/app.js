@@ -2401,20 +2401,16 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       input: '',
-      listItems: [],
       shownItems: [],
       listPos: -1,
       focused: false
     };
   },
   watch: {
-    data: function data(newVal) {
-      this.listItems = newVal;
-    },
     input: function input(newVal) {
       var _this = this;
 
-      this.shownItems = this.listItems.filter(function (row) {
+      this.shownItems = this.data.filter(function (row) {
         if (!_this.input) return false;
         return row[_this.field].toLowerCase().startsWith(_this.input.toLowerCase());
       }).filter(function (row, index) {
@@ -2422,14 +2418,14 @@ __webpack_require__.r(__webpack_exports__);
         return true;
       });
       this.listPos = -1;
-      if (this.weak) this.$emit('input', newVal);else {
-        if (!this.shownItems.some(function (item, index) {
-          if (item[_this.field].toLowerCase() === newVal.toLowerCase()) {
-            _this.$emit('input', _this.shownItems[index]);
 
-            return true;
-          }
-        })) {
+      if (!this.shownItems.some(function (item, index) {
+        if (item[_this.field].toLowerCase() === newVal.toLowerCase()) {
+          if (_this.weak) _this.$emit('input', _this.shownItems[index][_this.field]);else _this.$emit('input', _this.shownItems[index]);
+          return true;
+        }
+      })) {
+        if (this.weak) this.$emit('input', newVal);else {
           var object = {};
           object[this.field] = newVal;
           this.$emit('input', object);

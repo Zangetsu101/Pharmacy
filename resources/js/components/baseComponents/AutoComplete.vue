@@ -28,18 +28,14 @@ export default {
     data() {
         return {
             input:'',
-            listItems:[],
             shownItems:[],
             listPos:-1,
             focused:false
         }
     },
     watch: {
-        data(newVal) {
-            this.listItems=newVal;
-        },
         input(newVal) {
-            this.shownItems=this.listItems.filter(row=> {
+            this.shownItems=this.data.filter(row=> {
                 if(!this.input)
                     return false;
                 return row[this.field].toLowerCase().startsWith(this.input.toLowerCase());
@@ -49,17 +45,20 @@ export default {
                 return true;
             });
             this.listPos=-1;
-            if(this.weak)
-                this.$emit('input',newVal);
-            else
-            {
-                if(!this.shownItems.some((item,index)=> {
-                    if(item[this.field].toLowerCase()===newVal.toLowerCase())
-                    {
+            if(!this.shownItems.some((item,index)=> {
+                if(item[this.field].toLowerCase()===newVal.toLowerCase())
+                {
+                    if(this.weak)
+                        this.$emit('input',this.shownItems[index][this.field])
+                    else
                         this.$emit('input',this.shownItems[index]);
-                        return true;
-                    }
-                }))
+                    return true;
+                }
+            }))
+            {
+                if(this.weak)
+                    this.$emit('input',newVal);
+                else
                 {
                     let object={};
                     object[this.field]=newVal;
