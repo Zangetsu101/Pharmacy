@@ -1875,8 +1875,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1915,8 +1913,8 @@ __webpack_require__.r(__webpack_exports__);
       id: 0,
       name: '',
       company: {},
-      generic_name: '',
-      dosage_form: '',
+      generic_name: {},
+      dosage_form: {},
       wholesale_price: '',
       retail_price: ''
     };
@@ -1925,6 +1923,7 @@ __webpack_require__.r(__webpack_exports__);
     this.fetchCompanies();
     this.fetchGenericNames();
     this.fetchDosageForms();
+    this.reset();
   },
   methods: {
     fetchCompanies: function fetchCompanies() {
@@ -1942,7 +1941,7 @@ __webpack_require__.r(__webpack_exports__);
       fetch('api/generic_names').then(function (res) {
         return res.json();
       }).then(function (res) {
-        return _this2.generic_names = res;
+        return _this2.generic_names = res.data;
       });
     },
     fetchDosageForms: function fetchDosageForms() {
@@ -1951,12 +1950,14 @@ __webpack_require__.r(__webpack_exports__);
       fetch('api/dosage_forms').then(function (res) {
         return res.json();
       }).then(function (res) {
-        return _this3.dosage_forms = res;
+        return _this3.dosage_forms = res.data;
       });
     },
     addRow: function addRow() {
       var _this4 = this;
 
+      var dos = !this.dosage_form.id ? true : false;
+      var gen = !this.generic_name.id ? true : false;
       fetch('api/medicines', {
         method: 'POST',
         headers: {
@@ -1965,8 +1966,10 @@ __webpack_require__.r(__webpack_exports__);
         body: JSON.stringify({
           'name': this.name,
           'company_id': this.company.id,
-          'generic_name': this.generic_name,
-          'dosage_form': this.dosage_form,
+          'generic_name_id': this.generic_name.id,
+          'generic_name': this.generic_name.name,
+          'dosage_form_id': this.dosage_form.id,
+          'dosage_form': this.dosage_form.name,
           'wholesale_price': this.wholesale_price,
           'retail_price': this.retail_price
         })
@@ -1974,24 +1977,10 @@ __webpack_require__.r(__webpack_exports__);
         return res.json();
       }).then(function (res) {
         _this4.$emit('add-row', res.data);
+
+        if (gen) _this4.fetchGenericNames();
+        if (dos) _this4.fetchDosageForms();
       });
-
-      if (!this.generic_names.some(function (item) {
-        if (item.generic_name === _this4.generic_name) return true;
-      })) {
-        this.generic_names.push({
-          generic_name: this.generic_name
-        });
-      }
-
-      if (!this.dosage_forms.some(function (item) {
-        if (item.dosage_form === _this4.dosage_form) return true;
-      })) {
-        this.dosage_forms.push({
-          dosage_form: this.dosage_form
-        });
-      }
-
       this.reset();
       alert("Medicine Added Successfully");
     },
@@ -2001,8 +1990,15 @@ __webpack_require__.r(__webpack_exports__);
       this.company = {
         id: row.company_id,
         name: row.company_name
-      }, this.generic_name = row.generic_name;
-      this.dosage_form = row.dosage_form;
+      };
+      this.generic_name = {
+        id: row.generic_name_id,
+        name: row.generic_name
+      };
+      this.dosage_form = {
+        id: row.dosage_form_id,
+        name: row.dosage_form
+      };
       this.wholesale_price = row.wholesale_price;
       this.retail_price = row.retail_price;
       this.edit = true;
@@ -2010,6 +2006,8 @@ __webpack_require__.r(__webpack_exports__);
     editRow: function editRow() {
       var _this5 = this;
 
+      var dos = !this.dosage_form.id ? true : false;
+      var gen = !this.generic_name.id ? true : false;
       fetch("api/medicines/".concat(this.id), {
         method: 'PUT',
         headers: {
@@ -2018,8 +2016,10 @@ __webpack_require__.r(__webpack_exports__);
         body: JSON.stringify({
           'name': this.name,
           'company_id': this.company.id,
-          'generic_name': this.generic_name,
-          'dosage_form': this.dosage_form,
+          'generic_name_id': this.generic_name.id,
+          'generic_name': this.generic_name.name,
+          'dosage_form_id': this.dosage_form.id,
+          'dosage_form': this.dosage_form.name,
           'wholesale_price': this.wholesale_price,
           'retail_price': this.retail_price
         })
@@ -2027,6 +2027,9 @@ __webpack_require__.r(__webpack_exports__);
         return res.json();
       }).then(function (res) {
         _this5.$emit('edit-row', res.data);
+
+        if (gen) _this5.fetchGenericNames();
+        if (dos) _this5.fetchDosageForms();
       });
       this.reset();
       alert("Medicine Edited Successfully");
@@ -2034,9 +2037,15 @@ __webpack_require__.r(__webpack_exports__);
     reset: function reset() {
       this.id = 0;
       this.name = '';
-      this.company = {};
-      this.generic_name = '';
-      this.dosage_form = '';
+      this.company = {
+        id: null
+      };
+      this.generic_name = {
+        id: null
+      };
+      this.dosage_form = {
+        id: null
+      };
       this.wholesale_price = '';
       this.retail_price = '';
       this.edit = false;
@@ -2047,7 +2056,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     isMedicineValid: function isMedicineValid() {
-      if (!this.name || !this.company.id || !this.generic_name || !this.dosage_form || !this.isFloat(parseFloat(this.wholesale_price)) && !Number.isInteger(parseInt(this.wholesale_price)) || !this.isFloat(parseFloat(this.retail_price)) && !Number.isInteger(parseInt(this.retail_price)) || parseFloat(this.wholesale_price) >= parseFloat(this.retail_price)) return false;
+      if (!this.name || !this.company.id || !this.generic_name.name || !this.dosage_form.name || !this.isFloat(parseFloat(this.wholesale_price)) && !Number.isInteger(parseInt(this.wholesale_price)) || !this.isFloat(parseFloat(this.retail_price)) && !Number.isInteger(parseInt(this.retail_price)) || parseFloat(this.wholesale_price) >= parseFloat(this.retail_price)) return false;
       return true;
     }
   }
@@ -2129,7 +2138,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _baseComponents_MyTable_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./baseComponents/MyTable.vue */ "./resources/js/components/baseComponents/MyTable.vue");
 /* harmony import */ var _baseComponents_AutoComplete_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./baseComponents/AutoComplete.vue */ "./resources/js/components/baseComponents/AutoComplete.vue");
 /* harmony import */ var vuejs_datepicker__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuejs-datepicker */ "./node_modules/vuejs-datepicker/dist/vuejs-datepicker.esm.js");
-//
 //
 //
 //
@@ -2392,11 +2400,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    value: [Object, String],
+    value: Object,
     data: Array,
     field: String,
-    placeholder: String,
-    weak: Boolean
+    placeholder: String
   },
   data: function data() {
     return {
@@ -2421,19 +2428,18 @@ __webpack_require__.r(__webpack_exports__);
 
       if (!this.shownItems.some(function (item, index) {
         if (item[_this.field].toLowerCase() === newVal.toLowerCase()) {
-          if (_this.weak) _this.$emit('input', _this.shownItems[index][_this.field]);else _this.$emit('input', _this.shownItems[index]);
+          if (_this.weak) _this.$emit('input', _this.shownItems[index]);else _this.$emit('input', _this.shownItems[index]);
           return true;
         }
       })) {
-        if (this.weak) this.$emit('input', newVal);else {
-          var object = {};
-          object[this.field] = newVal;
-          this.$emit('input', object);
-        }
+        var object = {};
+        object['id'] = null;
+        object[this.field] = newVal;
+        this.$emit('input', object);
       }
     },
     value: function value(newVal) {
-      if (this.weak) this.input = newVal;else this.input = newVal[this.field];
+      this.input = newVal[this.field];
     }
   },
   methods: {
@@ -38823,7 +38829,10 @@ var render = function() {
               [
                 _c(
                   "option",
-                  { attrs: { disabled: "" }, domProps: { value: {} } },
+                  {
+                    attrs: { disabled: "" },
+                    domProps: { value: { id: null } }
+                  },
                   [_vm._v("Select a company")]
                 ),
                 _vm._v(" "),
@@ -38851,9 +38860,8 @@ var render = function() {
             [
               _c("auto-complete", {
                 attrs: {
-                  field: "generic_name",
+                  field: "name",
                   placeholder: "Generic Name",
-                  weak: true,
                   data: _vm.generic_names
                 },
                 model: {
@@ -38874,9 +38882,8 @@ var render = function() {
             [
               _c("auto-complete", {
                 attrs: {
-                  field: "dosage_form",
+                  field: "name",
                   placeholder: "Dosage Form",
-                  weak: true,
                   data: _vm.dosage_forms
                 },
                 model: {
@@ -39180,10 +39187,9 @@ var render = function() {
             [
               _c("auto-complete", {
                 attrs: {
-                  data: _vm.medicines,
-                  weak: false,
                   field: "name",
-                  placeholder: "Name"
+                  placeholder: "Name",
+                  data: _vm.medicines
                 },
                 model: {
                   value: _vm.medicine,
@@ -39640,7 +39646,7 @@ var render = function() {
               }),
               _vm._v(" "),
               _vm.isEditable
-                ? _c("th", { staticStyle: { width: "2vw" } })
+                ? _c("th", { staticStyle: { width: "1vw" } })
                 : _vm._e()
             ],
             2

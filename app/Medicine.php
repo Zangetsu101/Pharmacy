@@ -21,4 +21,14 @@ class Medicine extends Model
     {
         return $this->hasMany('App\Price')->whereNull('till');
     }
+
+    public function dosage_form()
+    {
+        return $this->belongsTo('App\DosageForm','dosage_form_id');
+    }
+
+    public function generic_name()
+    {
+        return $this->belongsTo('App\GenericName','generic_name_id');
+    }
 }

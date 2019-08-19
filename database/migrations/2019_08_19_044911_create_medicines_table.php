@@ -17,11 +17,13 @@ class CreateMedicinesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('company_id');
             $table->string('name');
-            $table->string('generic_name');
-            $table->string('dosage_form');
+            $table->unsignedInteger('generic_name_id');
+            $table->unsignedInteger('dosage_form_id');
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('generic_name_id')->references('id')->on('generic_names');
+            $table->foreign('dosage_form_id')->references('id')->on('dosage_forms');
         });
     }
 

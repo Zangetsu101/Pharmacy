@@ -10,7 +10,7 @@ $factory->define(Medicine::class, function (Faker $faker) {
         //
         'name'=>$faker->text(30),
         'company_id'=>$faker->numberBetween(1,5),
-        'generic_name'=>$faker->text(50),
-        'dosage_form'=>$faker->text(20)
+        'generic_name_id'=>$faker->numberBetween(1,50),
+        'dosage_form_id'=>$faker->numberBetween(1,5)
     ];
 });

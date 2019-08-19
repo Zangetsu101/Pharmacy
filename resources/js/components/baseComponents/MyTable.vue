@@ -27,7 +27,7 @@
                                 <i v-bind:class="{'fas fa-sort-up':selectedColumn===column.key&&sortDir==='asc'}"></i>
                                 <i v-bind:class="{'fas fa-sort-down':selectedColumn===column.key&&sortDir==='desc'}"></i>
                         </th>
-                        <th v-if="isEditable" style="width:2vw"></th>
+                        <th v-if="isEditable" style="width:1vw"></th>
                     </tr>
                 </thead>
                 <tbody>

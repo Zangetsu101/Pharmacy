@@ -13,9 +13,8 @@
                                  format="yyyy-MM-dd"></date-picker>
                 </div>
                 <div class="col">
-                    <auto-complete v-model="medicine" 
-                                   v-bind:data="medicines" 
-                                   v-bind:weak=false field="name" placeholder="Name"></auto-complete>
+                    <auto-complete v-model="medicine" field="name" placeholder="Name"
+                                   v-bind:data="medicines"></auto-complete>
                 </div>
                 <div class="col">
                     <input type="text" v-model="quantity" class="form-control" placeholder="Quantity">

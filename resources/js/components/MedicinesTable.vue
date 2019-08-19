@@ -11,7 +11,7 @@
                 </div>
                 <div>
                     <select name="company" v-model="company" class="form-control">
-                        <option v-bind:value="{}" disabled>Select a company</option>
+                        <option v-bind:value="{id:null}" disabled>Select a company</option>
                         <option v-for="comp in companies"
                                 v-bind:key="comp.id"
                                 v-bind:value="comp">
@@ -20,13 +20,11 @@
                     </select>
                 </div>
                 <div class="col-3">
-                    <auto-complete v-model="generic_name" field="generic_name" placeholder="Generic Name" 
-                                   v-bind:weak=true 
+                    <auto-complete v-model="generic_name" field="name" placeholder="Generic Name" 
                                    v-bind:data="generic_names"></auto-complete>
                 </div>
                 <div class="col">
-                    <auto-complete v-model="dosage_form" field="dosage_form" placeholder="Dosage Form" 
-                                   v-bind:weak=true 
+                    <auto-complete v-model="dosage_form" field="name" placeholder="Dosage Form" 
                                    v-bind:data="dosage_forms"></auto-complete>
                 </div>
                 <div class="col">
@@ -102,8 +100,8 @@
                 id:0,
                 name:'',
                 company:{},
-                generic_name:'',
-                dosage_form:'',
+                generic_name:{},
+                dosage_form:{},
                 wholesale_price:'',
                 retail_price:''
             }
@@ -112,6 +110,7 @@
             this.fetchCompanies();
             this.fetchGenericNames();
             this.fetchDosageForms();
+            this.reset();
         },
         methods: {
             fetchCompanies() {
@@ -124,14 +123,16 @@
             fetchGenericNames() {
                 fetch('api/generic_names')
                     .then(res=>res.json())
-                    .then(res=>this.generic_names=res);
+                    .then(res=>this.generic_names=res.data);
             },
             fetchDosageForms() {
                 fetch('api/dosage_forms')
                     .then(res=>res.json())
-                    .then(res=>this.dosage_forms=res);
+                    .then(res=>this.dosage_forms=res.data);
             },
             addRow() {
+                let dos=!this.dosage_form.id?true:false;
+                let gen=!this.generic_name.id?true:false;
                 fetch('api/medicines',{
                     method:'POST',
                     headers: {
@@ -140,8 +141,10 @@
                     body: JSON.stringify({
                         'name':this.name,
                         'company_id':this.company.id,
-                        'generic_name':this.generic_name,
-                        'dosage_form':this.dosage_form,
+                        'generic_name_id':this.generic_name.id,
+                        'generic_name':this.generic_name.name,
+                        'dosage_form_id':this.dosage_form.id,
+                        'dosage_form':this.dosage_form.name,
                         'wholesale_price':this.wholesale_price,
                         'retail_price':this.retail_price
                     })
@@ -149,25 +152,11 @@
                 .then(res=>res.json())
                 .then(res=> {
                     this.$emit('add-row',res.data);
+                    if(gen)
+                        this.fetchGenericNames();
+                    if(dos)
+                        this.fetchDosageForms();
                 });
-                if(!this.generic_names.some(item=> {
-                    if(item.generic_name===this.generic_name)
-                        return true;
-                }))
-                {
-                    this.generic_names.push({
-                        generic_name:this.generic_name
-                    });
-                }
-                if(!this.dosage_forms.some(item=> {
-                    if(item.dosage_form===this.dosage_form)
-                        return true;
-                }))
-                {
-                    this.dosage_forms.push({
-                        dosage_form:this.dosage_form
-                    });
-                }
                 this.reset();
                 alert("Medicine Added Successfully");
             },
@@ -177,14 +166,22 @@
                 this.company={
                     id:row.company_id,
                     name:row.company_name
-                },
-                this.generic_name=row.generic_name;
-                this.dosage_form=row.dosage_form;
+                };
+                this.generic_name={
+                    id:row.generic_name_id,
+                    name:row.generic_name
+                };
+                this.dosage_form={
+                    id:row.dosage_form_id,
+                    name:row.dosage_form
+                };
                 this.wholesale_price=row.wholesale_price;
                 this.retail_price=row.retail_price;
                 this.edit=true;
             },
             editRow() {
+                let dos=!this.dosage_form.id?true:false;
+                let gen=!this.generic_name.id?true:false;
                 fetch(`api/medicines/${this.id}`,{
                     method:'PUT',
                     headers: {
@@ -193,8 +190,10 @@
                     body: JSON.stringify({
                         'name':this.name,
                         'company_id':this.company.id,
-                        'generic_name':this.generic_name,
-                        'dosage_form':this.dosage_form,
+                        'generic_name_id':this.generic_name.id,
+                        'generic_name':this.generic_name.name,
+                        'dosage_form_id':this.dosage_form.id,
+                        'dosage_form':this.dosage_form.name,
                         'wholesale_price':this.wholesale_price,
                         'retail_price':this.retail_price
                     })
@@ -202,6 +201,10 @@
                 .then(res=>res.json())
                 .then(res=> {
                     this.$emit('edit-row',res.data);
+                    if(gen)
+                        this.fetchGenericNames();
+                    if(dos)
+                        this.fetchDosageForms();
                 });
                 this.reset();
                 alert("Medicine Edited Successfully");
@@ -210,9 +213,9 @@
             {
                 this.id=0;
                 this.name='';
-                this.company={};
-                this.generic_name='';
-                this.dosage_form='';
+                this.company={id:null};
+                this.generic_name={id:null};
+                this.dosage_form={id:null};
                 this.wholesale_price='';
                 this.retail_price='';
                 this.edit=false;
@@ -223,7 +226,7 @@
         },
         computed: {
             isMedicineValid() {
-                if(!this.name||!this.company.id||!this.generic_name||!this.dosage_form||
+                if(!this.name||!this.company.id||!this.generic_name.name||!this.dosage_form.name||
                     (!this.isFloat(parseFloat(this.wholesale_price))&&!Number.isInteger(parseInt(this.wholesale_price)))||
                     (!this.isFloat(parseFloat(this.retail_price))&&!Number.isInteger(parseInt(this.retail_price)))||
                     parseFloat(this.wholesale_price)>=parseFloat(this.retail_price))
@@ -235,4 +238,4 @@
 </script>
 
 <style>
-</style>
+</style

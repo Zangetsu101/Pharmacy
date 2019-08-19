@@ -19,11 +19,10 @@
 <script>
 export default {
     props: {
-        value:[Object,String],
+        value:Object,
         data:Array,
         field:String,
-        placeholder:String,
-        weak:Boolean
+        placeholder:String
     },
     data() {
         return {
@@ -49,28 +48,21 @@ export default {
                 if(item[this.field].toLowerCase()===newVal.toLowerCase())
                 {
                     if(this.weak)
-                        this.$emit('input',this.shownItems[index][this.field])
+                        this.$emit('input',this.shownItems[index])
                     else
                         this.$emit('input',this.shownItems[index]);
                     return true;
                 }
             }))
             {
-                if(this.weak)
-                    this.$emit('input',newVal);
-                else
-                {
-                    let object={};
-                    object[this.field]=newVal;
-                    this.$emit('input',object);
-                }
+                let object={};
+                object['id']=null;
+                object[this.field]=newVal;
+                this.$emit('input',object);
             }
         },
         value(newVal) {
-            if(this.weak)
-                this.input=newVal;
-            else
-                this.input=newVal[this.field];
+            this.input=newVal[this.field];
         }
     },
     methods: {
